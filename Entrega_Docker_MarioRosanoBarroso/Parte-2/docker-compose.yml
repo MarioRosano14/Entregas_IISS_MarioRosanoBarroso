@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: wordpress_mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpresspassword
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - parte2_net
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_site
+    restart: always
+    ports:
+      - 82:80
+    depends_on:
+      - mariadb
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpresspassword
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - parte2_net
+
+volumes:
+  mariadb_data:
+  wordpress_data:
+
+networks:
+  parte2_net:
